@@ -3,11 +3,13 @@
 		"next/core-web-vitals",
 		"plugin:react-hooks/recommended",
 		// https://github.com/jsx-eslint/eslint-plugin-jsx-a11y
-		"plugin:jsx-a11y/recommended"
+		"plugin:jsx-a11y/recommended",
+		"plugin:@typescript-eslint/recommended"
 	],
-	"plugins": ["react"],
+	"plugins": ["react", "@typescript-eslint"],
 	"rules": {
 		"@next/next/no-img-element": "off",
+		"@typescript-eslint/consistent-type-imports": "warn",
 
 		// https://eslint.org/docs/rules/semi
 
