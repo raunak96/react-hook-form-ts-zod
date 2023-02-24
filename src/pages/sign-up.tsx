@@ -1,14 +1,25 @@
 import TextField from "@/components/TextField";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const signUpSchema = z.object({
+	email: z.string().email(),
+	password: z.string().min(6).max(24),
+	confirmPassword: z.string().min(6).max(24),
+});
+export type FormData = z.infer<typeof signUpSchema>;
 
 const SignUpPage = () => {
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<InputFields>();
+	} = useForm<FormData>({
+		resolver: zodResolver(signUpSchema),
+	});
 
-	const onSubmit = (data: InputFields) => {
+	const onSubmit = (data: FormData) => {
 		console.log("onSubmit", data);
 	};
 
@@ -19,9 +30,7 @@ const SignUpPage = () => {
 			<TextField
 				id="email"
 				label="email"
-				inputProps={register("email", {
-					required: "Email is required",
-				})}
+				inputProps={register("email")}
 				errors={errors}
 				name="email"
 			/>
@@ -29,9 +38,7 @@ const SignUpPage = () => {
 				id="password"
 				label="password"
 				type="password"
-				inputProps={register("password", {
-					required: "Password is required",
-				})}
+				inputProps={register("password")}
 				errors={errors}
 				name="password"
 			/>
@@ -39,9 +46,7 @@ const SignUpPage = () => {
 				id="confirmPassword"
 				label="confirm-password"
 				type="password"
-				inputProps={register("confirmPassword", {
-					required: "Confirm Password is required",
-				})}
+				inputProps={register("confirmPassword")}
 				errors={errors}
 				name="confirmPassword"
 			/>

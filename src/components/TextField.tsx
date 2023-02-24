@@ -1,3 +1,4 @@
+import { type FormData } from "@/pages/sign-up";
 import { type FC } from "react";
 import { Input } from "react-daisyui";
 import {
@@ -8,9 +9,9 @@ import {
 type Props = {
 	label: string;
 	id: string;
-	name: keyof InputFields;
+	name: keyof FormData;
 	type?: "password" | "email" | "text";
-	errors: Partial<FieldErrorsImpl<InputFields>>;
+	errors: Partial<FieldErrorsImpl<FormData>>;
 	inputProps: UseFormRegisterReturn<string>;
 };
 const TextField: FC<Props> = ({
