@@ -3,11 +3,16 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const signUpSchema = z.object({
-	email: z.string().email(),
-	password: z.string().min(6).max(24),
-	confirmPassword: z.string().min(6).max(24),
-});
+const signUpSchema = z
+	.object({
+		email: z.string().email(),
+		password: z.string().min(6).max(24),
+		confirmPassword: z.string().min(6).max(24),
+	})
+	.refine(formData => formData.password === formData.confirmPassword, {
+		message: "Passwords must match",
+		path: ["confirmPassword"],
+	});
 export type FormData = z.infer<typeof signUpSchema>;
 
 const SignUpPage = () => {
