@@ -1,11 +1,18 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Response = {
-	success: boolean;
-	errors?: Record<string, string>;
+	success: true;
 };
 
-export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
+export type ErrorResponse = {
+	success: false;
+	errors: Record<string, string>;
+};
+
+export default async (
+	req: NextApiRequest,
+	res: NextApiResponse<Response | ErrorResponse>
+) => {
 	switch (req.method) {
 		case "POST":
 			const data = req.body as Record<string, string>;

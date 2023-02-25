@@ -2,19 +2,43 @@ import TextField from "./TextField";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type FormData, signUpSchema } from "@/schema";
-import { type FC } from "react";
+import { forwardRef, useImperativeHandle, useRef } from "react";
+import { Button } from "react-daisyui";
 
 type Props = {
-	onSubmit: (data: FormData) => void;
+	onSubmit: (data: FormData) => Promise<void>;
 };
-const SignUpForm: FC<Props> = ({ onSubmit }) => {
+export type setServerError = {
+	setErrors: (errors: Record<string, string>) => void;
+};
+
+const SignUpForm = forwardRef<setServerError, Props>(({ onSubmit }, ref) => {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors },
+		setError,
+		formState: { errors, isSubmitting },
 	} = useForm<FormData>({
 		resolver: zodResolver(signUpSchema),
 	});
+
+	const setServerErrorRef = useRef(setError);
+
+	useImperativeHandle(
+		ref,
+		() => {
+			return {
+				setErrors: (errors: Record<string, string>) => {
+					Object.entries(errors).forEach(([key, value]) => {
+						setServerErrorRef.current(key as keyof FormData, {
+							message: value,
+						});
+					});
+				},
+			};
+		},
+		[]
+	);
 
 	return (
 		<form
@@ -46,10 +70,13 @@ const SignUpForm: FC<Props> = ({ onSubmit }) => {
 				name="confirmPassword"
 			/>
 
-			<button type="submit" className="btn">
-				Submit
-			</button>
+			<Button type="submit" color="primary" disabled={isSubmitting}>
+				{isSubmitting ? "Submitting" : "Submit"}
+			</Button>
 		</form>
 	);
-};
+});
+
+SignUpForm.displayName = "SignUpForm";
+
 export default SignUpForm;
