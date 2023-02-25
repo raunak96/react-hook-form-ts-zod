@@ -8,10 +8,9 @@ type Response = {
 export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
 	switch (req.method) {
 		case "POST":
-			const { email } = req.body as Record<string, string>;
-
-			if (email === "bob@gmail.com") {
-				await new Promise(resolve => setTimeout(resolve, 1000));
+			const data = req.body as Record<string, string>;
+			await new Promise(resolve => setTimeout(resolve, 1000));
+			if (data.email === "bob@gmail.com") {
 				return res.status(500).json({
 					success: false,
 					errors: {
@@ -19,8 +18,6 @@ export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
 					},
 				});
 			}
-
-			await new Promise(resolve => setTimeout(resolve, 1000));
 			return res.status(200).json({
 				success: true,
 			});

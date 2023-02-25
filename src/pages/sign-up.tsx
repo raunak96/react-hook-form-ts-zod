@@ -1,65 +1,23 @@
-import TextField from "@/components/TextField";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import SignUpForm from "@/components/SignUpForm";
+import { type FormData } from "@/schema";
+import axios from "axios";
+import { type NextPage } from "next";
 
-const signUpSchema = z
-	.object({
-		email: z.string().email(),
-		password: z.string().min(6).max(24),
-		confirmPassword: z.string().min(6).max(24),
-	})
-	.refine(formData => formData.password === formData.confirmPassword, {
-		message: "Passwords must match",
-		path: ["confirmPassword"],
-	});
-export type FormData = z.infer<typeof signUpSchema>;
-
-const SignUpPage = () => {
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<FormData>({
-		resolver: zodResolver(signUpSchema),
-	});
-
-	const onSubmit = (data: FormData) => {
-		console.log("onSubmit", data);
+const SignUpPage: NextPage = () => {
+	const onSubmit = async ({ email, password }: FormData) => {
+		try {
+			const { data } = await axios.post(`/api/sign-up`, {
+				email: email,
+				password: password,
+			});
+			console.log(data);
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				console.log(error.response?.data);
+			} else console.log(error);
+		}
 	};
 
-	return (
-		<form
-			className="h-screen w-screen flex flex-col gap-4 items-center justify-center"
-			onSubmit={handleSubmit(onSubmit)}>
-			<TextField
-				id="email"
-				label="email"
-				inputProps={register("email")}
-				errors={errors}
-				name="email"
-			/>
-			<TextField
-				id="password"
-				label="password"
-				type="password"
-				inputProps={register("password")}
-				errors={errors}
-				name="password"
-			/>
-			<TextField
-				id="confirmPassword"
-				label="confirm-password"
-				type="password"
-				inputProps={register("confirmPassword")}
-				errors={errors}
-				name="confirmPassword"
-			/>
-
-			<button type="submit" className="btn">
-				Submit
-			</button>
-		</form>
-	);
+	return <SignUpForm onSubmit={onSubmit} />;
 };
 export default SignUpPage;

@@ -1,4 +1,4 @@
-import { type FormData } from "@/pages/sign-up";
+import { type FormData } from "@/schema";
 import { type FC } from "react";
 import { Input } from "react-daisyui";
 import {
